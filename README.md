@@ -1,5 +1,5 @@
 # komp
-A JavaScript library for composing functions together using a common context.
+A lightweight JavaScript library for composing functions together using an immutable common context.
 
 [![Build Status](https://travis-ci.org/jolson88/komp.svg?branch=master)](https://travis-ci.org/jolson88/komp)
 [![Dependencies](https://david-dm.org/jolson88/komp.svg)](https://david-dm.org/jolson88/komp)
@@ -12,7 +12,67 @@ A JavaScript library for composing functions together using a common context.
 TODO
 
 ## Usage
-TODO
+The main functionality of komp is provided via the `kompose` function. This function uses functional composition to chain functions together. Unlike normal function composition, `kompose` will take the return value from a function and incorporate it into the common context that was provided to it, resulting in a new context that is passed to the next function.
+
+This way, functions themselves can get just the parameters they need via destructuring and return only the new information it's calculated. `kompose` takes care of all the necessary plumbing through and immutability of the common context.
+
+```javascript
+const R = require("ramda");
+const { kompose } = require("komp");
+
+const users = [
+    { login: "jolson88", name: "Jason" },
+    { login: "praqzis", name: "Josh" }
+];
+
+function getUser({ userId }) {
+    return {
+        user: R.find(R.propEq("login", userId), users)
+    };
+}
+
+function greet({ user: { name } }) {
+    return {
+        greeting: `Hello, ${name}`
+    };
+}
+
+const k = kompose(greet, getUser);
+const beginContext = { userId: "jolson88" };
+const endContext = k(beginContext);
+endContext.user.name; //--> "Jason"
+endContext.greeting;  //--> "Hello, Jason"
+```
+
+In the above example, the initial context is:
+```javascript
+{
+    userId: "jolson88"
+}
+```
+
+After calling the first function `getUser` (remember, function composition is done from end to beginning so it's like `getGreeting(getUser(ctx))`), the context is now:
+```javascript
+{
+    userId: "jolson88",
+    user: {
+        login: "jolson88",
+        name: "Jason"
+    }
+}
+```
+
+Finally, after calling the next function `greet`, the final returned context looks like:
+```javascript
+{
+    userId: "jolson88",
+    user: {
+        login: "jolson88",
+        name: "Jason"
+    },
+    greeting: "Hello, Jason"
+}
+```
 
 ### Primitive functionality
 The main `kompose` functionality is made possible through primitive functions like `wrap`. Wrap takes an existing single-parameter function and will abstracts away the merging of the function's return value with the running context that is being passed between functions.
