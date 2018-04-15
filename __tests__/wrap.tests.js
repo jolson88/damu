@@ -1,3 +1,4 @@
+const R = require("ramda");
 const { wrap } = require("../src/wrap");
 
 describe("Wrap", () => {
@@ -53,5 +54,16 @@ describe("Wrap", () => {
         const ret = fn();
 
         expect(ret.__).toBe(42);
+    });
+    it("should only merge when return value is an object", () => {
+        const fn = wrap(() => {
+            return [1, 2, 3];
+        });
+
+        const ret = fn({ foo: 42 });
+
+        expect(ret.__).toEqual([1, 2, 3]);
+        expect(ret.foo).toBe(42);
+        expect(R.keys(ret).length).toBe(2);
     });
 });
