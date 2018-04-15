@@ -1,0 +1,39 @@
+{
+  "name": "komp",
+  "version": "0.0.1",
+  "description": "A JavaScript library for composing functions together with shared context and pattern matching",
+  "main": "src/index.js",
+  "scripts": {
+    "lint": "eslint --fix ./src && eslint --fix ./__tests__",
+    "test": "jest",
+    "test.watch": "jest --watchAll"
+  },
+  "repository": "git+https://github.com/jolson88/komp.git",
+  "keywords": [
+    "javascript",
+    "functional",
+    "composition",
+    "pipeline"
+  ],
+  "author": "Jason Olson <jolson88@outlook.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jolson88/komp/issues"
+  },
+  "homepage": "https://github.com/jolson88/komp#readme",
+  "dependencies": {
+    "ramda": "^0.25.0"
+  },
+  "devDependencies": {
+    "eslint": "^4.19.1",
+    "eslint-config-prettier": "^2.9.0",
+    "eslint-config-standard": "^11.0.0",
+    "eslint-plugin-import": "^2.11.0",
+    "eslint-plugin-node": "^6.0.1",
+    "eslint-plugin-prettier": "^2.6.0",
+    "eslint-plugin-promise": "^3.7.0",
+    "eslint-plugin-standard": "^3.0.1",
+    "jest": "^22.4.3",
+    "prettier": "^1.12.0"
+  }
+}
