@@ -1,10 +1,10 @@
-# komp
+# Damu
 A lightweight JavaScript library for composing functions together using an immutable common context.
 
-[![Build Status](https://travis-ci.org/jolson88/komp.svg?branch=master)](https://travis-ci.org/jolson88/komp)
-[![Dependencies](https://david-dm.org/jolson88/komp.svg)](https://david-dm.org/jolson88/komp)
+[![Build Status](https://travis-ci.org/jolson88/damu.svg?branch=master)](https://travis-ci.org/jolson88/damu)
+[![Dependencies](https://david-dm.org/jolson88/damu.svg)](https://david-dm.org/jolson88/damu)
 
-## Why does komp exist?
+## Why does Damu exist?
 > "It is better to have 100 functions operate on one data structure than 10 functions on 10 data structures."
 >
 > Alan Perlis
@@ -12,13 +12,13 @@ A lightweight JavaScript library for composing functions together using an immut
 TODO
 
 ## Usage
-The main functionality of komp is provided via the `kompose` function. This function uses functional composition to chain functions together. Unlike normal function composition, `kompose` will take the return value from a function and incorporate it into the common context that was provided to it, resulting in a new context that is passed to the next function.
+The main functionality of Damu is provided via the `compose` function. This function uses functional composition to chain functions together. Unlike normal function composition, `compose` will take the return value from a function and incorporate it into the common context that was provided to it, resulting in a new context that is passed to the next function.
 
-This way, functions themselves can get just the parameters they need via destructuring and return only the new information it's calculated. `kompose` takes care of all the necessary plumbing through and immutability of the common context.
+This way, functions themselves can get just the parameters they need via destructuring and return only the new information it's calculated. `compose` takes care of all the necessary plumbing through and immutability of the common context.
 
 ```javascript
 const R = require("ramda");
-const { kompose } = require("komp");
+const { compose } = require("damu");
 
 const users = [
     { login: "jolson88", name: "Jason" },
@@ -37,9 +37,9 @@ function greet({ user: { name } }) {
     };
 }
 
-const k = kompose(greet, getUser);
+const fn = compose(greet, getUser);
 const beginContext = { userId: "jolson88" };
-const endContext = k(beginContext);
+const endContext = fn(beginContext);
 endContext.user.name; //--> "Jason"
 endContext.greeting;  //--> "Hello, Jason"
 ```
@@ -75,10 +75,10 @@ Finally, after calling the next function `greet`, the final returned context loo
 ```
 
 ### Primitive functionality
-The main `kompose` functionality is made possible through primitive functions like `wrap`. Wrap takes an existing single-parameter function and will abstracts away the merging of the function's return value with the running context that is being passed between functions.
+The main `compose` functionality is made possible through primitive functions like `wrap`. Wrap takes an existing single-parameter function and will abstracts away the merging of the function's return value with the running context that is being passed between functions.
 
 ```javascript
-const { wrap } = require("komp");
+const { wrap } = require("damu");
 
 function sayHello({ name }) {
     return {

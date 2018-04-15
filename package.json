@@ -1,26 +1,27 @@
 {
-  "name": "komp",
-  "version": "0.0.1",
-  "description": "A JavaScript library for composing functions together with shared context and pattern matching",
+  "name": "damu",
+  "version": "0.1.1",
+  "description": "A JavaScript library for composing functions together with an immutable common context and destructuring",
   "main": "src/index.js",
   "scripts": {
     "lint": "eslint --fix ./src && eslint --fix ./__tests__",
     "test": "jest --coverage",
     "test.watch": "jest --watchAll"
   },
-  "repository": "git+https://github.com/jolson88/komp.git",
+  "repository": "git+https://github.com/jolson88/damu.git",
   "keywords": [
     "javascript",
     "functional",
+    "fp",
     "composition",
-    "pipeline"
+    "compose"
   ],
   "author": "Jason Olson <jolson88@outlook.com>",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/jolson88/komp/issues"
+    "url": "https://github.com/jolson88/damu/issues"
   },
-  "homepage": "https://github.com/jolson88/komp#readme",
+  "homepage": "https://github.com/jolson88/damu#readme",
   "jest": {
     "coverageThreshold": {
       "global": {

@@ -3,7 +3,7 @@ const { wrap } = require("./wrap");
 
 const filterToFunctions = R.filter(R.equals("Function"));
 
-function kompose(...args) {
+function compose(...args) {
     const argTypes = R.map(R.type, args);
     if (args.length > filterToFunctions(argTypes).length) {
         throw new Error(`Invalid Argument error\n\nExpected functions but got: ${argTypes}`);
@@ -14,5 +14,5 @@ function kompose(...args) {
 }
 
 module.exports = {
-    kompose
+    compose
 };

@@ -1,15 +1,15 @@
 const R = require("ramda");
-const { kompose } = require("../src/kompose");
+const { compose } = require("../src/compose");
 
 describe("Kompose", () => {
     it("should work with single function", () => {
-        const k = kompose(({ bar }) => {
+        const c = compose(({ bar }) => {
             return {
                 foo: 41 + bar
             };
         });
 
-        const ret = k({ bar: 1 });
+        const ret = c({ bar: 1 });
 
         expect(ret.foo).toBe(42);
         expect(ret.bar).toBe(1);
@@ -30,12 +30,12 @@ describe("Kompose", () => {
             };
         };
 
-        const ret = kompose(greet, getUser)({ userId: "jolson88" });
+        const ret = compose(greet, getUser)({ userId: "jolson88" });
 
         expect(ret.greeting).toBe("Hello, Jason");
     });
     it("should make previous return available via __", () => {
-        const k = kompose(
+        const c = compose(
             ({ __ }) => {
                 return {
                     greeting: __
@@ -46,19 +46,19 @@ describe("Kompose", () => {
             }
         );
 
-        const ret = k({ name: "Jason" });
+        const ret = c({ name: "Jason" });
 
         expect(ret.greeting).toEqual("Hello, Jason");
     });
     it("should validate parameters are functions", () => {
         expect(() => {
-            kompose(() => 42, 35);
+            compose(() => 42, 35);
         }).toThrowError("Invalid Argument");
         expect(() => {
-            kompose({});
+            compose({});
         }).toThrowError("Invalid Argument");
         expect(() => {
-            kompose([1, 2, 3]);
+            compose([1, 2, 3]);
         }).toThrowError("Invalid Argument");
     });
 });
