@@ -4,9 +4,8 @@
   "description": "A JavaScript library for composing functions together with shared context and pattern matching",
   "main": "src/index.js",
   "scripts": {
-    "coverage": "jest --coverage",
     "lint": "eslint --fix ./src && eslint --fix ./__tests__",
-    "test": "jest",
+    "test": "jest --coverage",
     "test.watch": "jest --watchAll"
   },
   "repository": "git+https://github.com/jolson88/komp.git",
@@ -22,6 +21,16 @@
     "url": "https://github.com/jolson88/komp/issues"
   },
   "homepage": "https://github.com/jolson88/komp#readme",
+  "jest": {
+    "coverageThreshold": {
+      "global": {
+        "branches": 80,
+        "functions": 80,
+        "lines": 80,
+        "statements": 80
+      }
+    }
+  },
   "dependencies": {
     "ramda": "^0.25.0"
   },

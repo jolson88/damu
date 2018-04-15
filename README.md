@@ -1,6 +1,9 @@
 # komp
 A JavaScript library for composing functions together using a common context.
 
+[![Build Status](https://travis-ci.org/jolson88/komp.svg?branch=master)](https://travis-ci.org/jolson88/komp)
+[![Dependencies](https://david-dm.org/jolson88/komp.svg)](https://david-dm.org/jolson88/komp)
+
 ## Why does komp exist?
 > "It is better to have 100 functions operate on one data structure than 10 functions on 10 data structures."
 >
@@ -47,9 +50,6 @@ yarn test
 
 # Run tests in watcher mode
 yarn run test.watch
-
-# Get test coverage metrics
-yarn run coverage
 
 # Linting (will happen as pre-commit hook as well)
 yarn run lint
