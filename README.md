@@ -2,6 +2,7 @@
 A lightweight JavaScript library for composing functions together using an immutable common context.
 
 [![Build Status](https://travis-ci.org/jolson88/damu.svg?branch=master)](https://travis-ci.org/jolson88/damu)
+[![NPM Module](https://badge.fury.io/js/damu.svg)](https://www.npmjs.org/package/damu)
 [![Dependencies](https://david-dm.org/jolson88/damu.svg)](https://david-dm.org/jolson88/damu)
 
 ## Why does Damu exist?
@@ -101,16 +102,3 @@ wrap(sayHello)(ctx);
 ```
 
 `wrap` will only merge objects directly into the context. Other values are made available to the next function via the `__` property in the common context.
-
-## Development
-
-```sh
-# Run tests
-yarn test
-
-# Run tests in watcher mode
-yarn run test.watch
-
-# Linting (will happen as pre-commit hook as well)
-yarn run lint
-```
