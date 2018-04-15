@@ -4,6 +4,7 @@
   "description": "A JavaScript library for composing functions together with shared context and pattern matching",
   "main": "src/index.js",
   "scripts": {
+    "coverage": "jest --coverage",
     "lint": "eslint --fix ./src && eslint --fix ./__tests__",
     "test": "jest",
     "test.watch": "jest --watchAll"

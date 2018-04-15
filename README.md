@@ -48,6 +48,9 @@ yarn test
 # Run tests in watcher mode
 yarn run test.watch
 
+# Get test coverage metrics
+yarn run coverage
+
 # Linting (will happen as pre-commit hook as well)
 yarn run lint
 ```
