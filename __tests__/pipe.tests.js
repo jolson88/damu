@@ -17,6 +17,20 @@ describe("Pipe", () => {
         expect(ret.next).toBe(2);
         expect(ret.final).toBe(3);
     });
+    it("should clear out __ for each return value", () => {
+        const p = D.pipe(
+            ({ start }) => {
+                return { next: start + 1 };
+            },
+            ({ next }) => {
+                return { final: next + 1 };
+            }
+        );
+
+        const ret = p({ start: 1 });
+
+        expect(ret.__).toEqual({ final: 3 });
+    });
     it("should work with promises", done => {
         const f = ({ x }) => {
             return {

@@ -5,7 +5,7 @@ const _isPromise = require("./internal/_isPromise");
 
 function mergeIntoContext(ctx, ret) {
     return _isObject(ret)
-        ? R.mergeDeepRight(ctx, R.merge(ret, { __: ret }))
+        ? R.merge(R.mergeDeepRight(ctx, ret), { __: ret })
         : R.merge(ctx, { __: ret });
 }
 
