@@ -1,6 +1,6 @@
 {
   "name": "damu",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "A JavaScript library for composing functions together with an immutable common context and destructuring",
   "main": "src/index.js",
   "scripts": {
