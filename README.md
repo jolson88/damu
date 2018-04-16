@@ -34,19 +34,21 @@ We see two simple functions (`f` and `g`) that operate on a single data structur
 But let's see a less contrived example that is more common in everyday development:
 
 ```javascript
-function getUser(userId) {
-    const user = userRepository.get(userId);
+async function getUser(userId) {
+    const userRepository = createUserRepository();
+    const user = await userRepository.get(userId);
     return {
         id: user.id,
         name: user.name
     };
 }
 
-function getRecords(user) {
-    return recordRepository.getAll(user.id);
+async function getRecords(user) {
+    const recordRepository = createRecordRepository();
+    return await recordRepository.getAll(user.id);
 }
 
-getRecords(getUser("jolson88"));
+await getRecords(await getUser("jolson88"));
 //--> [
 //-->     { id: 0, recordTitle: "Foo", updated: "April 14th, 2018" },
 //-->     { id: 1, recordTitle: "Bar", updated: "April 8th, 2017" }
@@ -59,7 +61,9 @@ Now we have two functions (`getUser` and `getRecords`) that deal with four diffe
 - An object that has an id property: *the `user` parameter expected by `getRecords`*
 - An array of records: *the array returned from the `getRecords` function*
 
-So it isn't as simple as two functions + one data structure like the first example was. We are needing to remember (and possibly interact) with **six** different objects/concepts, for two simple functions. Even more insidious is that these four data structures are implicit: based on function parameters and return values. These data structures are custom to each individual function, so breaking them out to their own create functions/types/classes doesn't solve our dependency problem. It only makes it a little more visible.
+We also have an added dimension of sync/async to worry about that limits our ability to directly compose functions together.
+
+So it isn't as simple as two functions + one data structure like the first example was. We are needing to remember (and possibly interact) with **six** different concepts plus sync/async, for two simple functions. Even more insidious is that these four data structures are implicit: based on function parameters and return values. These data structures are custom to each individual function, so breaking them out to their own create functions/types/classes doesn't solve our dependency problem. It only makes it a little more visible.
 
 While this problem may not seem significant when dealing with a small number of functions, it can quickly become unwieldy as the number of functions in the source code continues to grow. If we had ten functions pipelined and composed together like this, we would be dealing with **30** unique objects (ten functions, and each function's input and return value).
 
@@ -79,8 +83,9 @@ Damu takes a similar approach by leveraging a JavaScript object as a common map/
 ```javascript
 const D = require("damu");
 
-function getUser({ login }) {
-    const user = userRepository.get(login);
+async function getUser({ login }) {
+    const userRepository = createUserRepository();
+    const user = await userRepository.get(login);
     return {
         user: {
             id: user.id,
@@ -89,8 +94,9 @@ function getUser({ login }) {
     };
 }
 
-function getRecords({ user: { id } }) {
-    const records = recordRepository.getAll(id);
+async function getRecords({ user: { id } }) {
+    const recordRepository = createRecordRepository();
+    const records = await recordRepository.getAll(id);
     return {
         user: {
             records
@@ -99,7 +105,7 @@ function getRecords({ user: { id } }) {
 }
 
 const fn = D.compose(getRecords, getUser);
-fn({ login: "jolson88" });
+await fn({ login: "jolson88" });
 //--> {
 //-->     login: "jolson88",
 //-->     user: {
@@ -113,9 +119,54 @@ fn({ login: "jolson88" });
 //--> }
 ```
 
-As you can see, there is a single common context that is passed to functions being composed, and whose return values are incorporated into in an immutable fashion. The individual functions don't need to worry about preserving the context themselves, they can simply return the new structure/value that they need to and Damu will take care of preserving the context across calls.
+As you can see, there is a single common context that is passed to functions being composed. The return values from these functions are incorporated into the common context in an immutable fashion. The individual functions don't need to worry about preserving the context themselves, they can simply return a new structure/value and Damu will take care of preserving the context across calls. Functions also don't need to worry about whether they are in a Promise chain or not.
 
 Now, if we want a value populated by the first function to be used by the last function in our composition, we don't need to worry about virally plumbing it through a large number of functions. We can simply destructure the value in our last function since the common context is preserved through the entire composition.
+
+We can also use the common context for dependency injection if we wish:
+```javascript
+const D = require("damu");
+
+async function getUser({ login, config: { userRepository } }) {
+    const user = await userRepository.get(login);
+    return {
+        user: {
+            id: user.id,
+            name: user.name
+        }
+    };
+}
+
+async function getRecords({ user: { id }, config: { recordRepository } }) {
+    const records = await recordRepository.getAll(id);
+    return {
+        user: {
+            records
+        }
+    };
+}
+
+const ctx = {
+    config: {
+        recordRepository: createRecordRepository()
+        userRepository: createUserRepository(),
+    },
+    login: "jolson88"
+};
+const fn = D.compose(getRecords, getUser);
+await fn(ctx);
+//--> {
+//-->     login: "jolson88",
+//-->     user: {
+//-->         id: "fg142a98bc",
+//-->         name: "Jason",
+//-->         records: [
+//-->             { id: 0, recordTitle: "Foo", updated: "April 14th, 2018" },
+//-->             { id: 1, recordTitle: "Bar", updated: "April 8th, 2017" }
+//-->         ]
+//-->     }
+//--> }
+```
 
 ## Usage
 
