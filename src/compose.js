@@ -1,18 +1,21 @@
 const R = require("ramda");
-const { wrap } = require("./wrap");
+const _isFunction = require("./internal/_isFunction");
+const _isObject = require("./internal/_isObject");
 
-const filterToFunctions = R.filter(R.equals("Function"));
-
-function compose(...args) {
-    const argTypes = R.map(R.type, args);
-    if (args.length > filterToFunctions(argTypes).length) {
-        throw new Error(`Invalid Argument error\n\nExpected functions but got: ${argTypes}`);
+module.exports = function compose(...args) {
+    if (R.filter(_isFunction, args).length < args.length) {
+        throw new Error(`Invalid Arguments. Expected functions but got: ${R.map(R.type, args)}`);
     }
-    return ctx => {
-        return R.reduce((ctx, fn) => wrap(fn)(ctx), ctx, R.reverse(args));
+    return initialContext => {
+        return R.reduce(
+            (ctx, fn) => {
+                const ret = fn(ctx);
+                return _isObject(ret)
+                    ? R.mergeDeepRight(ctx, R.merge(ret, { __: ret }))
+                    : R.merge(ctx, { __: ret });
+            },
+            initialContext,
+            R.reverse(args)
+        );
     };
-}
-
-module.exports = {
-    compose
 };

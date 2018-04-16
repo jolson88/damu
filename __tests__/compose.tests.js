@@ -1,7 +1,7 @@
 const R = require("ramda");
-const { compose } = require("../src/compose");
+const compose = require("../src/compose");
 
-describe("Kompose", () => {
+describe("Compose", () => {
     it("should work with single function", () => {
         const c = compose(({ bar }) => {
             return {

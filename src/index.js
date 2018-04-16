@@ -1,5 +1,5 @@
-const { wrap } = require("./wrap");
+const compose = require("./compose");
 
 module.exports = {
-    wrap
+    compose
 };
