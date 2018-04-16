@@ -210,6 +210,38 @@ const beginContext = { userId: "jolson88" };
 const endContext = fn(beginContext);
 ```
 
+### Working with Promises
+Damu supports working with Promises directly out the box. You don't need to change anything about how your functions are composed together regardless of whether they are asynchronous or not. Damu will take care of it for you. 
+
+```javascript
+const f = ({ x }) => {
+    return {
+        fx: x + 20
+    };
+};
+const g = ({ fx }) => {
+    return Promise.resolve({
+        gx: fx * 2
+    });
+};
+const h = ({ gx }) => {
+    return {
+        hx: gx * 2
+    };
+};
+
+const p = D.pipe(f, g, h);
+p({ x: 1 }).then(console.log);
+//--> {
+//-->     x: 1,
+//-->     fx: 21,
+//-->     gx: 42,
+//-->     hx: 84
+//--> }
+```
+
+Even though `g` is an asynchronous function that returns a promise and the following `h` function is a normal function, you can see that we don't have to `pipe` or `compose` our functions together any differently and any functions coming after an async function don't need to be wrapped to be Promise-based either.
+
 ### Accessing previous return value directly
 Similar to a REPL experience, Damu makes the previous return value directly accessible via the `__` value in the passed context. Since only object return values from a composed function will be merged into common context, this provides a way to access the previously returned value if it's a non-Object primitive.
 

@@ -1,6 +1,24 @@
 const R = require("ramda");
 const _isFunction = require("./internal/_isFunction");
 const _isObject = require("./internal/_isObject");
+const _isPromise = require("./internal/_isPromise");
+
+function mergeIntoContext(ctx, ret) {
+    return _isObject(ret)
+        ? R.mergeDeepRight(ctx, R.merge(ret, { __: ret }))
+        : R.merge(ctx, { __: ret });
+}
+
+function run(ctx, fn) {
+    const ret = fn(ctx);
+    if (_isPromise(ret)) {
+        return ret.then(retP => {
+            return mergeIntoContext(ctx, retP);
+        });
+    } else {
+        return mergeIntoContext(ctx, ret);
+    }
+}
 
 module.exports = function compose(...args) {
     if (R.filter(_isFunction, args).length < args.length) {
@@ -9,10 +27,13 @@ module.exports = function compose(...args) {
     return initialContext => {
         return R.reduce(
             (ctx, fn) => {
-                const ret = fn(ctx);
-                return _isObject(ret)
-                    ? R.mergeDeepRight(ctx, R.merge(ret, { __: ret }))
-                    : R.merge(ctx, { __: ret });
+                if (_isPromise(ctx)) {
+                    return ctx.then(ctxP => {
+                        return run(ctxP, fn);
+                    });
+                } else {
+                    return run(ctx, fn);
+                }
             },
             initialContext,
             R.reverse(args)

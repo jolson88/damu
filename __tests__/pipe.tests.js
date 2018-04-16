@@ -17,4 +17,32 @@ describe("Pipe", () => {
         expect(ret.next).toBe(2);
         expect(ret.final).toBe(3);
     });
+    it("should work with promises", done => {
+        const f = ({ x }) => {
+            return {
+                fx: x + 20
+            };
+        };
+        const g = ({ fx }) => {
+            return Promise.resolve({
+                gx: fx * 2
+            });
+        };
+        const h = ({ gx }) => {
+            return {
+                hx: gx * 2
+            };
+        };
+
+        const p = D.pipe(f, g, h);
+        p({ x: 1 })
+            .then(ret => {
+                expect(ret.x).toBe(1);
+                expect(ret.fx).toBe(21);
+                expect(ret.gx).toBe(42);
+                expect(ret.hx).toBe(84);
+                done();
+            })
+            .catch(done);
+    });
 });
