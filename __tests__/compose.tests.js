@@ -1,9 +1,9 @@
 const R = require("ramda");
-const compose = require("../src/compose");
+const D = require("../src/index");
 
 describe("Compose", () => {
     it("should work with single function", () => {
-        const c = compose(({ bar }) => {
+        const c = D.compose(({ bar }) => {
             return {
                 foo: 41 + bar
             };
@@ -30,12 +30,12 @@ describe("Compose", () => {
             };
         };
 
-        const ret = compose(greet, getUser)({ userId: "jolson88" });
+        const ret = D.compose(greet, getUser)({ userId: "jolson88" });
 
         expect(ret.greeting).toBe("Hello, Jason");
     });
     it("should make previous return available via __", () => {
-        const c = compose(
+        const c = D.compose(
             ({ __ }) => {
                 return {
                     greeting: __
@@ -52,13 +52,13 @@ describe("Compose", () => {
     });
     it("should validate parameters are functions", () => {
         expect(() => {
-            compose(() => 42, 35);
+            D.compose(() => 42, 35);
         }).toThrowError("Invalid Argument");
         expect(() => {
-            compose({});
+            D.compose({});
         }).toThrowError("Invalid Argument");
         expect(() => {
-            compose([1, 2, 3]);
+            D.compose([1, 2, 3]);
         }).toThrowError("Invalid Argument");
     });
 });

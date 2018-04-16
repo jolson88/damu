@@ -118,6 +118,8 @@ As you can see, there is a single common context that is passed to functions bei
 Now, if we want a value populated by the first function to be used by the last function in our composition, we don't need to worry about virally plumbing it through a large number of functions. We can simply destructure the value in our last function since the common context is preserved through the entire composition.
 
 ## Usage
+
+### Compose
 The main functionality of Damu is provided via the `compose` function. This function uses functional composition to chain functions together. Unlike normal function composition, `compose` will take the return value from a function and incorporate it into the common context that was provided to it, resulting in a new context that is passed to the next function.
 
 This way, functions themselves can get just the parameters they need via destructuring and return only the new information it's calculated. `compose` takes care of all the necessary plumbing through and immutability of the common context.
@@ -178,6 +180,34 @@ Finally, after calling the next function `greet`, the final returned context loo
     },
     greeting: "Hello, Jason"
 }
+```
+
+### Pipe
+There is also a function called `pipe` that is similar to `compose`. But instead of evaluations functions right to left, it evaluates them left to right. This can make the code easier to read since the order of the functions passed in is the same order they get evaluated in.
+
+Using `pipe`, the `compose` example above would now look like:
+
+```javascript
+const R = require("ramda");
+const D = require("damu");
+
+...
+
+function getUser({ userId }) {
+    return {
+        user: R.find(R.propEq("login", userId), users)
+    };
+}
+
+function greet({ user: { name } }) {
+    return {
+        greeting: `Hello, ${name}`
+    };
+}
+
+const fn = D.pipe(getUser, greet); // Instead of D.compose(greet, getUser)
+const beginContext = { userId: "jolson88" };
+const endContext = fn(beginContext);
 ```
 
 ### Accessing previous return value directly
